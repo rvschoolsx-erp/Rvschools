@@ -14,7 +14,7 @@ INSERT INTO users (id, email, phone, password_hash, role, first_name, last_name,
 VALUES ('00000000-0000-0005-0000-000000000099', 'admin@school.com', NULL,
         '$2a$10$5TfaoXBTTF1Lss7hP9NdkO1Wd12fCpC852BiP7GR7Rqhbjii/qrbK',
         'admin', 'Admin', 'User', TRUE, TRUE)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 UPDATE users SET password_hash = '$2a$10$5TfaoXBTTF1Lss7hP9NdkO1Wd12fCpC852BiP7GR7Rqhbjii/qrbK',
   is_active = TRUE, is_verified = TRUE
 WHERE email = 'admin@school.com';
@@ -24,7 +24,7 @@ INSERT INTO users (id, email, phone, password_hash, role, first_name, last_name,
 VALUES ('00000000-0000-0006-0000-000000000099', 'teacher@school.com', NULL,
         '$2a$10$qftnOx8WtictAVU0EJ8cleF2T9fpMVRqst8YH59PVjoHOa8PwtcRi',
         'teacher', 'Anita', 'Joshi', TRUE, TRUE)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 UPDATE users SET password_hash = '$2a$10$qftnOx8WtictAVU0EJ8cleF2T9fpMVRqst8YH59PVjoHOa8PwtcRi',
   is_active = TRUE, is_verified = TRUE
 WHERE email = 'teacher@school.com';
@@ -34,7 +34,7 @@ INSERT INTO users (id, email, phone, password_hash, role, first_name, last_name,
 VALUES ('00000000-0000-0007-0000-000000000099', 'student@school.com', NULL,
         '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm',
         'student', 'Arjun', 'Mehta', TRUE, TRUE)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 UPDATE users SET password_hash = '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm',
   is_active = TRUE, is_verified = TRUE
 WHERE email = 'student@school.com';
@@ -44,7 +44,7 @@ INSERT INTO users (id, email, phone, password_hash, role, first_name, last_name,
 VALUES ('00000000-0000-0008-0000-000000000099', NULL, '9876543210',
         '$2a$10$/VIkmXVww7Kugae9KglQceeZ1X5owms5iZeO9Mz.cI4S9BkmCgq0y',
         'parent', 'Rajesh', 'Mehta', TRUE, TRUE)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 UPDATE users SET password_hash = '$2a$10$/VIkmXVww7Kugae9KglQceeZ1X5owms5iZeO9Mz.cI4S9BkmCgq0y',
   is_active = TRUE, is_verified = TRUE
 WHERE phone = '9876543210';
@@ -52,13 +52,13 @@ WHERE phone = '9876543210';
 
 -- =============================================================
 -- PART 2: TEACHER RECORD FOR DEMO TEACHER
+-- Uses SELECT to get actual user_id (safe even if UUID differs)
 -- =============================================================
 
 INSERT INTO teachers (id, user_id, employee_id, qualification, specialization, joining_date, designation, department, experience_years)
-VALUES ('00000000-0000-0009-0000-000000000099', '00000000-0000-0006-0000-000000000099',
-        'EMP-099', 'M.Ed., B.Sc.', 'Science & Biology', '2018-06-01',
-        'TGT Science', 'Science', 6)
-ON CONFLICT (id) DO NOTHING;
+SELECT '00000000-0000-0009-0000-000000000099', u.id, 'EMP-099', 'M.Ed., B.Sc.', 'Science & Biology', '2018-06-01', 'TGT Science', 'Science', 6
+FROM users u WHERE u.email = 'teacher@school.com'
+ON CONFLICT DO NOTHING;
 
 
 -- =============================================================
@@ -71,10 +71,10 @@ INSERT INTO sections (id, class_id, name, capacity, room_number) VALUES
   ('00000000-0000-0003-0000-000000000016', '00000000-0000-0002-0000-000000000003', 'A', 35, 'R-301'),
   ('00000000-0000-0003-0000-000000000017', '00000000-0000-0002-0000-000000000004', 'A', 35, 'R-401'),
   ('00000000-0000-0003-0000-000000000018', '00000000-0000-0002-0000-000000000005', 'A', 35, 'R-501')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- Assign demo teacher as class teacher of section 9-A
-UPDATE sections SET class_teacher_id = '00000000-0000-0006-0000-000000000099'
+UPDATE sections SET class_teacher_id = (SELECT id FROM users WHERE email = 'teacher@school.com' LIMIT 1)
   WHERE id = '00000000-0000-0003-0000-000000000007';
 
 
@@ -98,7 +98,7 @@ INSERT INTO users (id, email, phone, password_hash, role, first_name, last_name,
   ('00000000-0000-0007-0000-000000000016', 'mohit.yadav@srsv.edu.in',   '9800000016', '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm', 'student', 'Mohit',    'Yadav',      TRUE, TRUE),
   ('00000000-0000-0007-0000-000000000017', 'riya.kapoor@srsv.edu.in',   '9800000017', '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm', 'student', 'Riya',     'Kapoor',     TRUE, TRUE),
   ('00000000-0000-0007-0000-000000000018', 'dev.trivedi@srsv.edu.in',   '9800000018', '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm', 'student', 'Dev',      'Trivedi',    TRUE, TRUE)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 
 -- =============================================================
@@ -110,11 +110,12 @@ ON CONFLICT (id) DO NOTHING;
 -- Classes 1-5: 4 students each (for distribution chart)
 -- =============================================================
 
--- Demo student (student@school.com)
+-- Demo student (student@school.com) — uses SELECT to get actual user_id
 INSERT INTO students (id, user_id, admission_number, roll_number, section_id, date_of_birth, gender, blood_group, admission_date, admission_status)
-VALUES ('00000000-0000-000a-0000-000000000099', '00000000-0000-0007-0000-000000000099',
-        '2024/099', '8', '00000000-0000-0003-0000-000000000005', '2011-05-12', 'male', 'O+', '2021-06-01', 'active')
-ON CONFLICT (id) DO NOTHING;
+SELECT '00000000-0000-000a-0000-000000000099', u.id, '2024/099', '8',
+       '00000000-0000-0003-0000-000000000005', '2011-05-12', 'male', 'O+', '2021-06-01', 'active'
+FROM users u WHERE u.email = 'student@school.com'
+ON CONFLICT DO NOTHING;
 
 -- Class 8A students
 INSERT INTO students (id, user_id, admission_number, roll_number, section_id, date_of_birth, gender, blood_group, admission_date, admission_status) VALUES
@@ -122,7 +123,7 @@ INSERT INTO students (id, user_id, admission_number, roll_number, section_id, da
   ('00000000-0000-000a-0000-000000000005', '00000000-0000-0007-0000-000000000005', '2024/005', '5', '00000000-0000-0003-0000-000000000005', '2011-12-03', 'male',   'B-',  '2022-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000006', '00000000-0000-0007-0000-000000000006', '2024/006', '6', '00000000-0000-0003-0000-000000000005', '2011-02-27', 'female', 'O-',  '2022-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000007', '00000000-0000-0007-0000-000000000007', '2024/007', '7', '00000000-0000-0003-0000-000000000005', '2011-09-18', 'male',   'AB+', '2022-06-01', 'active')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- Class 8B students
 INSERT INTO students (id, user_id, admission_number, roll_number, section_id, date_of_birth, gender, blood_group, admission_date, admission_status) VALUES
@@ -130,7 +131,7 @@ INSERT INTO students (id, user_id, admission_number, roll_number, section_id, da
   ('00000000-0000-000a-0000-000000000009', '00000000-0000-0007-0000-000000000009', '2024/009', '2', '00000000-0000-0003-0000-000000000006', '2011-07-11', 'male',   'O+',  '2021-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000010', '00000000-0000-0007-0000-000000000010', '2024/010', '3', '00000000-0000-0003-0000-000000000006', '2011-01-30', 'female', 'A-',  '2022-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000011', '00000000-0000-0007-0000-000000000011', '2024/011', '4', '00000000-0000-0003-0000-000000000006', '2011-06-05', 'male',   'B+',  '2022-06-01', 'active')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- Class 9A students
 INSERT INTO students (id, user_id, admission_number, roll_number, section_id, date_of_birth, gender, blood_group, admission_date, admission_status) VALUES
@@ -138,14 +139,14 @@ INSERT INTO students (id, user_id, admission_number, roll_number, section_id, da
   ('00000000-0000-000a-0000-000000000013', '00000000-0000-0007-0000-000000000013', '2023/013', '2', '00000000-0000-0003-0000-000000000007', '2010-11-25', 'male',   'AB-', '2020-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000014', '00000000-0000-0007-0000-000000000014', '2023/014', '3', '00000000-0000-0003-0000-000000000007', '2010-08-07', 'female', 'A+',  '2021-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000015', '00000000-0000-0007-0000-000000000015', '2023/015', '4', '00000000-0000-0003-0000-000000000007', '2010-05-19', 'male',   'B+',  '2021-06-01', 'active')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- Class 10A students
 INSERT INTO students (id, user_id, admission_number, roll_number, section_id, date_of_birth, gender, blood_group, admission_date, admission_status) VALUES
   ('00000000-0000-000a-0000-000000000016', '00000000-0000-0007-0000-000000000016', '2022/016', '1', '00000000-0000-0003-0000-000000000008', '2009-04-08', 'female', 'O-',  '2019-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000017', '00000000-0000-0007-0000-000000000017', '2022/017', '2', '00000000-0000-0003-0000-000000000008', '2009-09-22', 'male',   'A+',  '2019-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000018', '00000000-0000-0007-0000-000000000018', '2022/018', '3', '00000000-0000-0003-0000-000000000008', '2009-12-15', 'male',   'B-',  '2020-06-01', 'active')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- Classes 1-5: 4 students each (dummy, no user accounts needed — just for count in analytics)
 INSERT INTO users (id, email, phone, password_hash, role, first_name, last_name, is_active) VALUES
@@ -169,7 +170,7 @@ INSERT INTO users (id, email, phone, password_hash, role, first_name, last_name,
   ('00000000-0000-0007-0000-000000000118', 's118@srsv.edu.in', '9800000118', '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm', 'student', 'Shweta',  'Pandey', TRUE),
   ('00000000-0000-0007-0000-000000000119', 's119@srsv.edu.in', '9800000119', '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm', 'student', 'Gaurav',  'Singh',  TRUE),
   ('00000000-0000-0007-0000-000000000120', 's120@srsv.edu.in', '9800000120', '$2a$10$g3NwJKcNbUroxBEoPj3QW.3sWbjxxo/B.USmxgSqk92xNjDC3GbQm', 'student', 'Mamta',   'Dubey',  TRUE)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- Spread students across classes 1-5 sections
 INSERT INTO students (id, user_id, admission_number, roll_number, section_id, date_of_birth, gender, admission_date, admission_status) VALUES
@@ -198,7 +199,7 @@ INSERT INTO students (id, user_id, admission_number, roll_number, section_id, da
   ('00000000-0000-000a-0000-000000000118', '00000000-0000-0007-0000-000000000118', '2024/118', '2', '00000000-0000-0003-0000-000000000018', '2014-06-03', 'female', '2020-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000119', '00000000-0000-0007-0000-000000000119', '2024/119', '3', '00000000-0000-0003-0000-000000000018', '2014-09-17', 'male',   '2020-06-01', 'active'),
   ('00000000-0000-000a-0000-000000000120', '00000000-0000-0007-0000-000000000120', '2024/120', '4', '00000000-0000-0003-0000-000000000018', '2014-12-23', 'female', '2020-06-01', 'active')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 
 -- =============================================================
@@ -206,12 +207,17 @@ ON CONFLICT (id) DO NOTHING;
 -- =============================================================
 
 INSERT INTO parents (id, user_id, relationship, occupation)
-VALUES ('00000000-0000-000b-0000-000000000099', '00000000-0000-0008-0000-000000000099', 'father', 'Engineer')
-ON CONFLICT (id) DO NOTHING;
+SELECT '00000000-0000-000b-0000-000000000099', u.id, 'father', 'Engineer'
+FROM users u WHERE u.phone = '9876543210'
+ON CONFLICT DO NOTHING;
 
 INSERT INTO student_parents (id, student_id, parent_id, is_primary)
-VALUES (gen_random_uuid(), '00000000-0000-000a-0000-000000000099', '00000000-0000-000b-0000-000000000099', TRUE)
-ON CONFLICT DO NOTHING;
+SELECT gen_random_uuid(), '00000000-0000-000a-0000-000000000099', '00000000-0000-000b-0000-000000000099', TRUE
+WHERE NOT EXISTS (
+  SELECT 1 FROM student_parents
+  WHERE student_id = '00000000-0000-000a-0000-000000000099'
+    AND parent_id  = '00000000-0000-000b-0000-000000000099'
+);
 
 
 -- =============================================================
@@ -326,7 +332,7 @@ INSERT INTO fee_structures (id, academic_year_id, class_id, fee_type, amount, du
   ('00000000-0000-000d-0000-000000000003', '00000000-0000-0001-0000-000000000001', '00000000-0000-0002-0000-000000000008', 'Library Fee',      500.00, '2024-04-30', FALSE),
   ('00000000-0000-000d-0000-000000000004', '00000000-0000-0001-0000-000000000001', '00000000-0000-0002-0000-000000000009', 'Tuition Fee',     3000.00, '2024-04-10', TRUE),
   ('00000000-0000-000d-0000-000000000005', '00000000-0000-0001-0000-000000000001', '00000000-0000-0002-0000-000000000010', 'Tuition Fee',     3200.00, '2024-04-10', TRUE)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 
 -- =============================================================
@@ -362,7 +368,7 @@ INSERT INTO fees (id, student_id, fee_structure_id, academic_year_id, amount_due
   ('00000000-0000-000e-0000-000000000016', '00000000-0000-000a-0000-000000000016', '00000000-0000-000d-0000-000000000005', '00000000-0000-0001-0000-000000000001', 3200.00, 3200.00, '2024-04-10', 'paid'),
   ('00000000-0000-000e-0000-000000000017', '00000000-0000-000a-0000-000000000017', '00000000-0000-000d-0000-000000000005', '00000000-0000-0001-0000-000000000001', 3200.00, 1600.00, '2024-04-10', 'pending'),
   ('00000000-0000-000e-0000-000000000018', '00000000-0000-000a-0000-000000000018', '00000000-0000-000d-0000-000000000005', '00000000-0000-0001-0000-000000000001', 3200.00, 3200.00, '2024-04-10', 'paid')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 
 -- =============================================================
@@ -450,7 +456,7 @@ INSERT INTO homework (id, teacher_id, section_id, subject_id, title, description
    'Periodic Table Exercise', 'Write electronic configuration of first 20 elements. Practice 5 times.', CURRENT_DATE + 4),
   ('00000000-0000-000f-0000-000000000006', '00000000-0000-0006-0000-000000000099', '00000000-0000-0003-0000-000000000007', '00000000-0000-0004-0000-000000000004',
    'Food and Nutrition Project', 'Prepare a chart showing food groups, nutrients and their sources.', CURRENT_DATE - 2)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 
 -- =============================================================
@@ -463,7 +469,7 @@ INSERT INTO notifications (id, title, body, type, sender_id, is_broadcast, sent_
   ('00000000-0000-0010-0000-000000000003', 'Half-Yearly Exam Schedule Released', 'Half-Yearly Examination 2024-25 dates have been published. Exams will be held from 1 Oct to 10 Oct 2026.', 'exam', '00000000-0000-0005-0000-000000000001', TRUE, NOW()),
   ('00000000-0000-0010-0000-000000000004', 'Holiday Notice — Eid ul-Adha', 'School will remain closed on 17 June 2026 on account of Eid ul-Adha. Classes will resume from 18 June.', 'general', '00000000-0000-0005-0000-000000000001', TRUE, NOW()),
   ('00000000-0000-0010-0000-000000000005', 'Sports Day Registration Open', 'Annual Sports Day registrations are now open. Students interested in participating must register with their class teacher by 12 June.', 'general', '00000000-0000-0005-0000-000000000001', FALSE, NOW())
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- Link notifications to demo student
 INSERT INTO user_notifications (id, user_id, notification_id, is_read)
