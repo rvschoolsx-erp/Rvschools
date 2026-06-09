@@ -134,39 +134,43 @@ export default function HomePage() {
       </section>
 
       {/* Founders Section */}
-      <section className="py-20 bg-white">
+      <section className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-14">
             <span className="text-blue-600 text-sm font-semibold uppercase tracking-widest">Behind SchoolConnect</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">Meet the Founders</h2>
-            <p className="text-gray-500 mt-2">The people who built SchoolConnect from the ground up</p>
+            <h2 className="text-4xl font-bold text-gray-900 mt-2">Meet the Founders</h2>
+            <p className="text-gray-500 mt-3 text-lg">The people who built SchoolConnect from the ground up</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Ravindra Shekhawat */}
-            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-3xl p-8 border border-indigo-100 flex flex-col">
-              <div className="flex items-start gap-5 mb-6">
-                <div className="relative flex-shrink-0">
-                  <Image src="/ravindra.png" alt="Ravindra Shekhawat" width={96} height={96} className="w-24 h-24 rounded-2xl object-cover shadow-lg" />
-                  <div className="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">
-                    Founder
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Ravindra Shekhawat</h3>
-                  <p className="text-indigo-600 font-semibold text-sm mt-0.5">DevOps & Cloud Architect</p>
-                  <p className="text-gray-400 text-xs mt-1">18+ Years of Experience</p>
-                </div>
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col items-center text-center p-8 group hover:shadow-2xl transition-shadow duration-300">
+              <div className="relative w-48 h-56 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-indigo-200 mb-5 ring-4 ring-indigo-100">
+                <Image
+                  src="/ravindra.png"
+                  alt="Ravindra Shekhawat"
+                  fill
+                  className="object-contain"
+                />
               </div>
-              <p className="text-gray-600 text-sm leading-relaxed mb-5">
+              <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
+                Founder & CEO
+              </span>
+              <h3 className="text-2xl font-bold text-gray-900">Ravindra Shekhawat</h3>
+              <p className="text-indigo-600 font-semibold mt-1 text-sm">DevOps & Cloud Architect</p>
+              <p className="text-gray-400 text-xs mt-1 flex items-center justify-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block" />
+                18+ Years of Experience
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed mt-4 mb-6">
                 With <span className="font-semibold text-gray-800">18+ years</span> across enterprise tech,
                 Ravindra brings unmatched depth in cloud infrastructure, backend systems, and team leadership.
                 He has led and delivered large-scale projects for global organizations as a Scrum Master,
                 DevOps lead, and Cloud Expert.
               </p>
-              <div className="flex flex-wrap gap-2 mt-auto">
+              <div className="flex flex-wrap gap-2 justify-center mt-auto">
                 {['DevOps', 'Cloud Expert', 'Scrum Master', 'Backend Dev', 'Frontend Dev', 'Team Management'].map(skill => (
-                  <span key={skill} className="bg-white border border-indigo-200 text-indigo-700 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+                  <span key={skill} className="bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-medium px-3 py-1.5 rounded-full">
                     {skill}
                   </span>
                 ))}
@@ -174,29 +178,33 @@ export default function HomePage() {
             </div>
 
             {/* Vikrant Shekhawat */}
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border border-blue-100 flex flex-col">
-              <div className="flex items-start gap-5 mb-6">
-                <div className="relative flex-shrink-0">
-                  <Image src="/vikrant.jpg" alt="Vikrant Shekhawat" width={96} height={96} className="w-24 h-24 rounded-2xl object-cover shadow-lg" />
-                  <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">
-                    Founder & CEO
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Vikrant Shekhawat</h3>
-                  <p className="text-blue-600 font-semibold text-sm mt-0.5">Full Stack Developer & Designer</p>
-                  <p className="text-gray-400 text-xs mt-1">11+ Years of Experience</p>
-                </div>
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col items-center text-center p-8 group hover:shadow-2xl transition-shadow duration-300">
+              <div className="relative w-48 h-56 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 mb-5 ring-4 ring-blue-100">
+                <Image
+                  src="/vikrant.jpg"
+                  alt="Vikrant Shekhawat"
+                  fill
+                  className="object-contain"
+                />
               </div>
-              <p className="text-gray-600 text-sm leading-relaxed mb-5">
+              <span className="bg-blue-100 text-blue-700 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
+                Founder & CEO
+              </span>
+              <h3 className="text-2xl font-bold text-gray-900">Vikrant Shekhawat</h3>
+              <p className="text-blue-600 font-semibold mt-1 text-sm">Full Stack Developer & Designer</p>
+              <p className="text-gray-400 text-xs mt-1 flex items-center justify-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block" />
+                11+ Years of Experience
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed mt-4 mb-6">
                 With <span className="font-semibold text-gray-800">11+ years of experience</span> working with MNCs
                 and domestic companies, Vikrant built SchoolConnect to solve the real challenges Indian schools
                 face every day. From enterprise-grade architecture to pixel-perfect UI, every part of SchoolConnect
                 reflects his passion for software that truly works.
               </p>
-              <div className="flex flex-wrap gap-2 mt-auto">
+              <div className="flex flex-wrap gap-2 justify-center mt-auto">
                 {['Full Stack Dev', 'UI/UX Design', 'System Architecture', 'EdTech', 'SaaS Products'].map(skill => (
-                  <span key={skill} className="bg-white border border-blue-200 text-blue-700 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+                  <span key={skill} className="bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-full">
                     {skill}
                   </span>
                 ))}
@@ -204,9 +212,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Combined CTA */}
-          <div className="mt-8 text-center">
-            <a href="mailto:hello@schoolconnect.in" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-100">
+          {/* CTA */}
+          <div className="mt-10 text-center">
+            <a href="mailto:hello@schoolconnect.in" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-3.5 rounded-xl transition-colors shadow-lg shadow-blue-100 text-sm">
               📧 Get in Touch with the Team
             </a>
           </div>
