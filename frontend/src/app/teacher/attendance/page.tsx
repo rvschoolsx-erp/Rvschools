@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calendar, CheckCircle, XCircle, Clock, Save, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -30,14 +30,16 @@ export default function TeacherAttendancePage() {
     queryKey: ['section-attendance', selectedSection, selectedDate],
     queryFn: () => apiService.attendance.getSection(selectedSection, selectedDate).then(r => r.data.data),
     enabled: !!selectedSection,
-    onSuccess: (data) => {
-      const existing: Record<string, AttendanceStatus> = {};
-      (data ?? []).forEach((a: { student_id: string; status: AttendanceStatus }) => {
-        existing[a.student_id] = a.status;
-      });
-      setMarks(existing);
-    },
   });
+
+  useEffect(() => {
+    if (!existingAttendance) return;
+    const existing: Record<string, AttendanceStatus> = {};
+    (existingAttendance ?? []).forEach((a: { student_id: string; status: AttendanceStatus }) => {
+      existing[a.student_id] = a.status;
+    });
+    setMarks(existing);
+  }, [existingAttendance]);
 
   const students: { id: string; first_name: string; last_name: string; roll_number: string }[] =
     existingAttendance?.students ?? existingAttendance ?? [];
