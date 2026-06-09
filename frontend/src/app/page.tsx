@@ -133,47 +133,82 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Founder Section */}
+      {/* Founders Section */}
       <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-10">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
             <span className="text-blue-600 text-sm font-semibold uppercase tracking-widest">Behind SchoolConnect</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">Meet the Founder</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mt-2">Meet the Founders</h2>
+            <p className="text-gray-500 mt-2">The people who built SchoolConnect from the ground up</p>
           </div>
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 border border-blue-100">
-            <div className="flex-shrink-0">
-              <div className="relative">
-                <Image src="/vikrant.jpg" alt="Vikrant Shekhawat" width={180} height={180} className="rounded-2xl object-cover shadow-xl" />
-                <div className="absolute -bottom-3 -right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow">
-                  Founder & CEO
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Ravindra Shekhawat */}
+            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-3xl p-8 border border-indigo-100 flex flex-col">
+              <div className="flex items-start gap-5 mb-6">
+                <div className="relative flex-shrink-0">
+                  <Image src="/ravindra.png" alt="Ravindra Shekhawat" width={96} height={96} className="w-24 h-24 rounded-2xl object-cover shadow-lg" />
+                  <div className="absolute -bottom-2 -right-2 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">
+                    Founder
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Ravindra Shekhawat</h3>
+                  <p className="text-indigo-600 font-semibold text-sm mt-0.5">DevOps & Cloud Architect</p>
+                  <p className="text-gray-400 text-xs mt-1">18+ Years of Experience</p>
                 </div>
               </div>
-            </div>
-            <div className="flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">Vikrant Shekhawat</h3>
-              <p className="text-blue-600 font-semibold mb-4">Full Stack Developer & Designer</p>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                With <span className="font-semibold text-gray-800">11+ years of experience</span> working with MNCs and domestic companies,
-                Vikrant built SchoolConnect to solve the real challenges Indian schools face every day.
-                From enterprise-grade architecture to pixel-perfect UI, every part of SchoolConnect
-                reflects his passion for building software that actually works.
+              <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                With <span className="font-semibold text-gray-800">18+ years</span> across enterprise tech,
+                Ravindra brings unmatched depth in cloud infrastructure, backend systems, and team leadership.
+                He has led and delivered large-scale projects for global organizations as a Scrum Master,
+                DevOps lead, and Cloud Expert.
               </p>
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start mb-6">
-                {['Full Stack Development', 'UI/UX Design', 'System Architecture', 'EdTech', 'SaaS Products'].map(skill => (
-                  <span key={skill} className="bg-white border border-blue-200 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-full shadow-sm">
+              <div className="flex flex-wrap gap-2 mt-auto">
+                {['DevOps', 'Cloud Expert', 'Scrum Master', 'Backend Dev', 'Frontend Dev', 'Team Management'].map(skill => (
+                  <span key={skill} className="bg-white border border-indigo-200 text-indigo-700 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
                     {skill}
                   </span>
                 ))}
               </div>
-              <div className="flex gap-4 justify-center md:justify-start">
-                <a href="mailto:vikrant@schoolconnect.in" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
-                  📧 Get in Touch
-                </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white border border-gray-200 hover:border-blue-300 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
-                  LinkedIn →
-                </a>
+            </div>
+
+            {/* Vikrant Shekhawat */}
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border border-blue-100 flex flex-col">
+              <div className="flex items-start gap-5 mb-6">
+                <div className="relative flex-shrink-0">
+                  <Image src="/vikrant.jpg" alt="Vikrant Shekhawat" width={96} height={96} className="w-24 h-24 rounded-2xl object-cover shadow-lg" />
+                  <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">
+                    Founder & CEO
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Vikrant Shekhawat</h3>
+                  <p className="text-blue-600 font-semibold text-sm mt-0.5">Full Stack Developer & Designer</p>
+                  <p className="text-gray-400 text-xs mt-1">11+ Years of Experience</p>
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                With <span className="font-semibold text-gray-800">11+ years of experience</span> working with MNCs
+                and domestic companies, Vikrant built SchoolConnect to solve the real challenges Indian schools
+                face every day. From enterprise-grade architecture to pixel-perfect UI, every part of SchoolConnect
+                reflects his passion for software that truly works.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-auto">
+                {['Full Stack Dev', 'UI/UX Design', 'System Architecture', 'EdTech', 'SaaS Products'].map(skill => (
+                  <span key={skill} className="bg-white border border-blue-200 text-blue-700 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+                    {skill}
+                  </span>
+                ))}
               </div>
             </div>
+          </div>
+
+          {/* Combined CTA */}
+          <div className="mt-8 text-center">
+            <a href="mailto:hello@schoolconnect.in" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-100">
+              📧 Get in Touch with the Team
+            </a>
           </div>
         </div>
       </section>
