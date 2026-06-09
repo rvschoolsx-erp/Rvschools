@@ -21,7 +21,7 @@ export default function AdminReportsPage() {
 
   const { data: analyticsData } = useQuery({
     queryKey: ['admin-analytics'],
-    queryFn: () => apiService.analytics.getOverview().then(r => r.data.data),
+    queryFn: () => apiService.analytics.admin().then(r => r.data.data),
   });
 
   const overview = analyticsData?.overview ?? {
