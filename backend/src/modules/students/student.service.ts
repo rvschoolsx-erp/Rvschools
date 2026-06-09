@@ -187,7 +187,7 @@ export class StudentService {
       [id]
     );
 
-    const result = { ...rows[0], parents };
+    const result = { ...(rows[0] as Record<string, unknown>), parents };
     await cache.set(cacheKey, result, 300);
     return result;
   }

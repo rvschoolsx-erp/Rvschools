@@ -76,9 +76,10 @@ export class AttendanceService {
     );
 
     const total = rows.length;
-    const present = rows.filter(r => ['present', 'late'].includes(r.status)).length;
-    const absent = rows.filter(r => r.status === 'absent').length;
-    const late = rows.filter(r => r.status === 'late').length;
+    const typedRows = rows as Array<{ status: string; date: string; remarks: string }>;
+    const present = typedRows.filter(r => ['present', 'late'].includes(r.status)).length;
+    const absent = typedRows.filter(r => r.status === 'absent').length;
+    const late = typedRows.filter(r => r.status === 'late').length;
     const percentage = total > 0 ? ((present / total) * 100).toFixed(2) : '0.00';
 
     return {

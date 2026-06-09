@@ -17,7 +17,7 @@ const changePasswordSchema = z.object({
 
 export class AuthController {
   async login(req: Request, res: Response): Promise<void> {
-    const body = loginSchema.parse(req.body);
+    const body = loginSchema.parse(req.body) as { identifier: string; password: string; fcmToken?: string };
     const result = await authService.login(body);
 
     res.cookie('refreshToken', result.tokens.refreshToken, {

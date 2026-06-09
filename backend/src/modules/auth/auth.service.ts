@@ -30,10 +30,10 @@ interface TokenPair {
 
 export class AuthService {
   generateTokens(payload: JwtPayload): TokenPair {
-    const accessToken = jwt.sign(payload, env.JWT_SECRET, {
-      expiresIn: env.JWT_EXPIRES_IN,
-    });
-    const refreshToken = jwt.sign(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sign = jwt.sign as any;
+    const accessToken = sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN });
+    const refreshToken = sign(
       { userId: payload.userId, role: payload.role },
       env.JWT_REFRESH_SECRET,
       { expiresIn: env.JWT_REFRESH_EXPIRES_IN }
