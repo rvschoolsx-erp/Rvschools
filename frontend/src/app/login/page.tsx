@@ -52,7 +52,10 @@ export default function LoginPage() {
       toast.success(`Welcome, ${user?.firstName}!`);
       router.push(roleRedirects[user?.role ?? 'student']);
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      const msg = (err as { response?: { data?: { message?: string } }; message?: string })?.response?.data?.message
+        || (err as { message?: string })?.message
+        || 'Unknown error';
+      alert('LOGIN ERROR: ' + msg);
       toast.error(msg || 'Login failed. Please try again.');
     }
   };
