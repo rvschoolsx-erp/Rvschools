@@ -57,18 +57,40 @@ const navByRole: Record<string, typeof adminNav> = {
   student: studentNav,
 };
 
+const roleHomePage: Record<string, string> = {
+  admin:   '/admin/dashboard',
+  teacher: '/teacher/attendance',
+  parent:  '/parent/dashboard',
+  student: '/student/dashboard',
+};
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { user, logout, isAuthenticated } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const brand = useBrand();
   const { lang, toggleLang, t } = useLanguage();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  // Role guard — redirect unauthenticated users to login, and wrong-role
+  // users to their own dashboard (e.g. parent visiting /admin/*)
+  useEffect(() => {
+    if (!mounted) return;
+    if (!isAuthenticated || !user) {
+      router.replace('/login');
+      return;
+    }
+    const role = user.role;
+    const prefix = pathname.split('/')[1]; // 'admin' | 'teacher' | 'parent' | 'student'
+    if (prefix && prefix !== role) {
+      router.replace(roleHomePage[role] ?? '/login');
+    }
+  }, [mounted, isAuthenticated, user, pathname, router]);
 
   const initials = brand.schoolName.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase()).join('');
   const nav = navByRole[user?.role ?? 'student'] ?? studentNav;
