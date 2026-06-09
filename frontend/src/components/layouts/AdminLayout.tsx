@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useAuthStore } from '@/store/authStore';
 import { useBrand } from '@/contexts/BrandContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   LayoutDashboard, Users, GraduationCap, UserCheck, BookOpen,
   ClipboardList, CreditCard, BarChart2, Bell, Settings,
@@ -14,39 +15,39 @@ import {
 import { cn } from '@/lib/utils';
 
 const adminNav = [
-  { label: 'डैशबोर्ड',    href: '/admin/dashboard',  icon: LayoutDashboard },
-  { label: 'छात्र',        href: '/admin/students',   icon: GraduationCap },
-  { label: 'शिक्षक',      href: '/admin/teachers',   icon: Users },
-  { label: 'अभिभावक',    href: '/admin/parents',    icon: UserCheck },
-  { label: 'उपस्थिति',   href: '/admin/attendance', icon: ClipboardList },
-  { label: 'परीक्षा',      href: '/admin/exams',      icon: BookMarked },
-  { label: 'फीस',          href: '/admin/fees',       icon: CreditCard },
-  { label: 'रिपोर्ट',      href: '/admin/reports',    icon: FileText },
-  { label: 'एनालिटिक्स',  href: '/admin/analytics',  icon: BarChart2 },
-  { label: 'सूचनाएं',     href: '/admin/notifications', icon: Bell },
-  { label: 'सेटिंग्स',    href: '/admin/settings',    icon: Settings },
+  { hi: 'डैशबोर्ड',    en: 'Dashboard',    href: '/admin/dashboard',      icon: LayoutDashboard },
+  { hi: 'छात्र',        en: 'Students',      href: '/admin/students',       icon: GraduationCap },
+  { hi: 'शिक्षक',      en: 'Teachers',      href: '/admin/teachers',       icon: Users },
+  { hi: 'अभिभावक',    en: 'Parents',       href: '/admin/parents',        icon: UserCheck },
+  { hi: 'उपस्थिति',   en: 'Attendance',    href: '/admin/attendance',     icon: ClipboardList },
+  { hi: 'परीक्षा',      en: 'Exams',         href: '/admin/exams',          icon: BookMarked },
+  { hi: 'फीस',          en: 'Fees',          href: '/admin/fees',           icon: CreditCard },
+  { hi: 'रिपोर्ट',      en: 'Reports',       href: '/admin/reports',        icon: FileText },
+  { hi: 'एनालिटिक्स',  en: 'Analytics',     href: '/admin/analytics',      icon: BarChart2 },
+  { hi: 'सूचनाएं',     en: 'Notifications', href: '/admin/notifications',  icon: Bell },
+  { hi: 'सेटिंग्स',    en: 'Settings',      href: '/admin/settings',       icon: Settings },
 ];
 
 const teacherNav = [
-  { label: 'उपस्थिति',   href: '/teacher/attendance', icon: ClipboardList },
-  { label: 'अंक',         href: '/teacher/marks',      icon: Award },
-  { label: 'गृहकार्य',   href: '/teacher/homework',   icon: BookOpen },
-  { label: 'परीक्षा',     href: '/teacher/exams',      icon: BookMarked },
+  { hi: 'उपस्थिति',   en: 'Attendance',  href: '/teacher/attendance', icon: ClipboardList },
+  { hi: 'अंक',         en: 'Marks',       href: '/teacher/marks',      icon: Award },
+  { hi: 'गृहकार्य',   en: 'Homework',    href: '/teacher/homework',   icon: BookOpen },
+  { hi: 'परीक्षा',     en: 'Exams',       href: '/teacher/exams',      icon: BookMarked },
 ];
 
 const parentNav = [
-  { label: 'डैशबोर्ड',   href: '/parent/dashboard', icon: LayoutDashboard },
-  { label: 'उपस्थिति',   href: '/parent/attendance', icon: ClipboardList },
-  { label: 'फीस',         href: '/parent/fees',       icon: CreditCard },
-  { label: 'सूचनाएं',    href: '/parent/notifications', icon: Bell },
+  { hi: 'डैशबोर्ड',   en: 'Dashboard',     href: '/parent/dashboard',     icon: LayoutDashboard },
+  { hi: 'उपस्थिति',   en: 'Attendance',    href: '/parent/attendance',    icon: ClipboardList },
+  { hi: 'फीस',         en: 'Fees',          href: '/parent/fees',          icon: CreditCard },
+  { hi: 'सूचनाएं',    en: 'Notifications', href: '/parent/notifications', icon: Bell },
 ];
 
 const studentNav = [
-  { label: 'डैशबोर्ड',  href: '/student/dashboard',  icon: LayoutDashboard },
-  { label: 'उपस्थिति',  href: '/student/attendance',  icon: ClipboardList },
-  { label: 'अंक',        href: '/student/marks',       icon: Award },
-  { label: 'गृहकार्य',  href: '/student/homework',    icon: BookOpen },
-  { label: 'टाइमटेबल',  href: '/student/timetable',   icon: BookMarked },
+  { hi: 'डैशबोर्ड',  en: 'Dashboard',     href: '/student/dashboard',    icon: LayoutDashboard },
+  { hi: 'उपस्थिति',  en: 'Attendance',    href: '/student/attendance',   icon: ClipboardList },
+  { hi: 'अंक',        en: 'Marks',         href: '/student/marks',        icon: Award },
+  { hi: 'गृहकार्य',  en: 'Homework',      href: '/student/homework',     icon: BookOpen },
+  { hi: 'टाइमटेबल',  en: 'Timetable',     href: '/student/timetable',    icon: BookMarked },
 ];
 
 const navByRole: Record<string, typeof adminNav> = {
@@ -64,12 +65,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const brand = useBrand();
+  const { lang, toggleLang, t } = useLanguage();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
   const initials = brand.schoolName.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase()).join('');
-
   const nav = navByRole[user?.role ?? 'student'] ?? studentNav;
 
   const handleLogout = async () => {
@@ -116,10 +117,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   ? 'bg-gold-500/20 text-gold-300 border border-gold-500/30'
                   : 'text-brand-300 hover:text-white hover:bg-brand-700',
               )}
-              title={!sidebarOpen ? item.label : undefined}
+              title={!sidebarOpen ? t(item.hi, item.en) : undefined}
             >
               <Icon size={18} className="flex-shrink-0" />
-              {sidebarOpen && <span className="font-hindi">{item.label}</span>}
+              {sidebarOpen && (
+                <span className={lang === 'hi' ? 'font-hindi' : ''}>
+                  {t(item.hi, item.en)}
+                </span>
+              )}
             </Link>
           );
         })}
@@ -143,10 +148,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-brand-300 hover:text-red-400 hover:bg-red-500/10 transition-all"
-          title={!sidebarOpen ? 'Logout' : undefined}
+          title={!sidebarOpen ? t('लॉगआउट', 'Logout') : undefined}
         >
           <LogOut size={16} />
-          {sidebarOpen && <span>लॉगआउट</span>}
+          {sidebarOpen && <span>{t('लॉगआउट', 'Logout')}</span>}
         </button>
       </div>
     </div>
@@ -198,14 +203,27 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </Link>
               <ChevronDown size={14} className="-rotate-90" />
               <span className="capitalize font-medium text-gray-800 dark:text-gray-200">
-                {user?.role === 'admin' ? 'Admin Panel' :
-                 user?.role === 'teacher' ? 'Teacher Panel' :
-                 user?.role === 'parent' ? 'Parent Portal' : 'Student Portal'}
+                {user?.role === 'admin'   ? t('एडमिन पैनल', 'Admin Panel') :
+                 user?.role === 'teacher' ? t('शिक्षक पैनल', 'Teacher Panel') :
+                 user?.role === 'parent'  ? t('अभिभावक पोर्टल', 'Parent Portal') :
+                                           t('छात्र पोर्टल', 'Student Portal')}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Language Toggle */}
+            {mounted && (
+              <button
+                onClick={toggleLang}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-w-[40px] text-center"
+                title={lang === 'en' ? 'Switch to Hindi' : 'Switch to English'}
+              >
+                {lang === 'en' ? 'हि' : 'EN'}
+              </button>
+            )}
+
+            {/* Theme Toggle */}
             {mounted && (
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Search, Filter, Download, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, Download, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { AppLayout } from '@/components/layouts/AdminLayout';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { apiService } from '@/lib/api';
 import { cn, formatDate, getInitials } from '@/lib/utils';
 
@@ -16,20 +17,28 @@ const statusColors: Record<string, string> = {
 };
 
 export default function StudentsPage() {
+  const { t, lang } = useLanguage();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [classFilter, setClassFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('active');
   const [searchInput, setSearchInput] = useState('');
 
   const { data, isLoading } = useQuery({
-    queryKey: ['students', page, search, classFilter, statusFilter],
-    queryFn: () => apiService.students.getAll({ page, limit: 15, search, classId: classFilter, status: statusFilter })
+    queryKey: ['students', page, search, statusFilter],
+    queryFn: () => apiService.students.getAll({ page, limit: 15, search, status: statusFilter })
                     .then(r => r.data),
   });
 
   const students = data?.data ?? [];
   const pagination = data?.pagination;
+
+  const statusLabel = (s: string) => ({
+    active:      t('सक्रिय', 'Active'),
+    inactive:    t('निष्क्रिय', 'Inactive'),
+    graduated:   t('उत्तीर्ण', 'Graduated'),
+    transferred: t('स्थानांतरित', 'Transferred'),
+    suspended:   t('निलंबित', 'Suspended'),
+  }[s] ?? s);
 
   return (
     <AppLayout>
@@ -37,9 +46,11 @@ export default function StudentsPage() {
         {/* Header */}
         <div className="page-header">
           <div>
-            <h1 className="page-title font-hindi">छात्र प्रबंधन</h1>
+            <h1 className={`page-title ${lang === 'hi' ? 'font-hindi' : ''}`}>
+              {t('छात्र प्रबंधन', 'Student Management')}
+            </h1>
             <p className="text-muted-foreground text-sm">
-              कुल {pagination?.total ?? '—'} छात्र नामांकित
+              {t('कुल', 'Total')} {pagination?.total ?? '—'} {t('छात्र नामांकित', 'students enrolled')}
             </p>
           </div>
           <Link
@@ -47,7 +58,7 @@ export default function StudentsPage() {
             className="flex items-center gap-2 bg-brand-800 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
           >
             <Plus size={16} />
-            <span className="font-hindi">नया छात्र</span>
+            <span className={lang === 'hi' ? 'font-hindi' : ''}>{t('नया छात्र', 'Add Student')}</span>
           </Link>
         </div>
 
@@ -57,23 +68,23 @@ export default function StudentsPage() {
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="नाम, प्रवेश संख्या से खोजें..."
+              placeholder={t('नाम, प्रवेश संख्या से खोजें...', 'Search by name, admission no...')}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') { setSearch(searchInput); setPage(1); } }}
-              className="w-full pl-9 pr-4 py-2 border border-input rounded-lg bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className={`w-full pl-9 pr-4 py-2 border border-input rounded-lg bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring ${lang === 'hi' ? 'font-hindi' : ''}`}
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="border border-input rounded-lg px-3 py-2 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className={`border border-input rounded-lg px-3 py-2 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring ${lang === 'hi' ? 'font-hindi' : ''}`}
           >
-            <option value="active">सक्रिय छात्र</option>
-            <option value="inactive">निष्क्रिय</option>
-            <option value="graduated">उत्तीर्ण</option>
-            <option value="transferred">स्थानांतरित</option>
+            <option value="active">{t('सक्रिय छात्र', 'Active Students')}</option>
+            <option value="inactive">{t('निष्क्रिय', 'Inactive')}</option>
+            <option value="graduated">{t('उत्तीर्ण', 'Graduated')}</option>
+            <option value="transferred">{t('स्थानांतरित', 'Transferred')}</option>
           </select>
 
           <button
@@ -91,12 +102,19 @@ export default function StudentsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-muted/50 border-b border-border">
-                  <th className="text-left px-4 py-3.5 font-semibold text-muted-foreground">छात्र</th>
-                  <th className="text-left px-4 py-3.5 font-semibold text-muted-foreground hidden sm:table-cell">प्रवेश संख्या</th>
-                  <th className="text-left px-4 py-3.5 font-semibold text-muted-foreground hidden md:table-cell">कक्षा</th>
-                  <th className="text-left px-4 py-3.5 font-semibold text-muted-foreground hidden lg:table-cell">दिनांक</th>
-                  <th className="text-left px-4 py-3.5 font-semibold text-muted-foreground">स्थिति</th>
-                  <th className="text-right px-4 py-3.5 font-semibold text-muted-foreground">कार्य</th>
+                  {[
+                    { hi: 'छात्र', en: 'Student' },
+                    { hi: 'प्रवेश संख्या', en: 'Adm. No.' },
+                    { hi: 'कक्षा', en: 'Class' },
+                    { hi: 'दिनांक', en: 'Date' },
+                    { hi: 'स्थिति', en: 'Status' },
+                    { hi: 'कार्य', en: 'Actions' },
+                  ].map((col, i) => (
+                    <th key={col.en} className={`text-left px-4 py-3.5 font-semibold text-muted-foreground ${lang === 'hi' ? 'font-hindi' : ''}
+                      ${i === 1 ? 'hidden sm:table-cell' : i === 2 ? 'hidden md:table-cell' : i === 3 ? 'hidden lg:table-cell' : i === 5 ? 'text-right' : ''}`}>
+                      {t(col.hi, col.en)}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -114,7 +132,7 @@ export default function StudentsPage() {
                   : students.map((s: {
                       id: string; first_name: string; last_name: string;
                       email?: string; avatar_url?: string; admission_number: string;
-                      class_name?: string; section_name?: string; numeric_level?: number;
+                      class_name?: string; section_name?: string;
                       admission_date: string; admission_status: string; gender: string;
                     }) => (
                       <tr key={s.id} className="hover:bg-muted/30 transition-colors group">
@@ -150,31 +168,24 @@ export default function StudentsPage() {
                             'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium',
                             statusColors[s.admission_status] ?? 'bg-gray-100 text-gray-600'
                           )}>
-                            {s.admission_status === 'active' ? 'सक्रिय' :
-                             s.admission_status === 'inactive' ? 'निष्क्रिय' :
-                             s.admission_status === 'graduated' ? 'उत्तीर्ण' : s.admission_status}
+                            {statusLabel(s.admission_status)}
                           </span>
                         </td>
                         <td className="px-4 py-3.5">
                           <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Link
-                              href={`/admin/students/${s.id}`}
+                            <Link href={`/admin/students/${s.id}`}
                               className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 transition-colors"
-                              title="देखें"
-                            >
+                              title={t('देखें', 'View')}>
                               <Eye size={15} />
                             </Link>
-                            <Link
-                              href={`/admin/students/${s.id}/edit`}
+                            <Link href={`/admin/students/${s.id}/edit`}
                               className="p-1.5 rounded-lg hover:bg-yellow-50 text-yellow-600 transition-colors"
-                              title="संपादित करें"
-                            >
+                              title={t('संपादित करें', 'Edit')}>
                               <Edit size={15} />
                             </Link>
                             <button
                               className="p-1.5 rounded-lg hover:bg-red-50 text-red-500 transition-colors"
-                              title="हटाएं"
-                            >
+                              title={t('हटाएं', 'Delete')}>
                               <Trash2 size={15} />
                             </button>
                           </div>
@@ -186,8 +197,13 @@ export default function StudentsPage() {
 
             {!isLoading && students.length === 0 && (
               <div className="text-center py-16 text-muted-foreground">
-                <GraduationCapIcon />
-                <p className="font-hindi mt-2">कोई छात्र नहीं मिला</p>
+                <div className="w-16 h-16 mx-auto mb-3 bg-muted rounded-full flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8">
+                    <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                    <path d="M12 14l6.16-3.422a12 12 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12 12 0 01.665-6.479L12 14z" />
+                  </svg>
+                </div>
+                <p className={lang === 'hi' ? 'font-hindi' : ''}>{t('कोई छात्र नहीं मिला', 'No students found')}</p>
               </div>
             )}
           </div>
@@ -199,19 +215,13 @@ export default function StudentsPage() {
                 {((page - 1) * 15) + 1}–{Math.min(page * 15, pagination.total)} of {pagination.total}
               </p>
               <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setPage(p => p - 1)}
-                  disabled={!pagination.hasPrev}
-                  className="p-1.5 rounded-lg border border-border hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
+                <button onClick={() => setPage(p => p - 1)} disabled={!pagination.hasPrev}
+                  className="p-1.5 rounded-lg border border-border hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                   <ChevronLeft size={16} />
                 </button>
                 <span className="px-3 py-1 text-sm font-medium">{page} / {pagination.totalPages}</span>
-                <button
-                  onClick={() => setPage(p => p + 1)}
-                  disabled={!pagination.hasNext}
-                  className="p-1.5 rounded-lg border border-border hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
+                <button onClick={() => setPage(p => p + 1)} disabled={!pagination.hasNext}
+                  className="p-1.5 rounded-lg border border-border hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                   <ChevronRight size={16} />
                 </button>
               </div>
@@ -220,16 +230,5 @@ export default function StudentsPage() {
         </div>
       </div>
     </AppLayout>
-  );
-}
-
-function GraduationCapIcon() {
-  return (
-    <div className="w-16 h-16 mx-auto mb-3 bg-muted rounded-full flex items-center justify-center">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8">
-        <path d="M12 14l9-5-9-5-9 5 9 5z" />
-        <path d="M12 14l6.16-3.422a12 12 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12 12 0 01.665-6.479L12 14z" />
-      </svg>
-    </div>
   );
 }

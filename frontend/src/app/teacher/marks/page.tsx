@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Save, Award } from 'lucide-react';
+import { Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { AppLayout } from '@/components/layouts/AdminLayout';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { apiService } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +16,7 @@ interface MarkEntry {
 }
 
 export default function TeacherMarksPage() {
+  const { t, lang } = useLanguage();
   const [selectedExam, setSelectedExam] = useState('');
   const [marks, setMarks] = useState<Record<string, MarkEntry>>({});
   const queryClient = useQueryClient();
@@ -49,7 +51,7 @@ export default function TeacherMarksPage() {
       marks: Object.values(marks).filter(m => m.marksObtained !== ''),
     }),
     onSuccess: () => {
-      toast.success('अंक सफलतापूर्वक दर्ज किए गए');
+      toast.success(t('अंक सफलतापूर्वक दर्ज किए गए', 'Marks saved successfully'));
       queryClient.invalidateQueries({ queryKey: ['exam-marks', selectedExam] });
     },
   });
@@ -59,19 +61,25 @@ export default function TeacherMarksPage() {
       <div className="space-y-5">
         <div className="page-header">
           <div>
-            <h1 className="page-title font-hindi">अंक प्रविष्टि</h1>
-            <p className="text-muted-foreground text-sm">परीक्षा के अंक दर्ज करें</p>
+            <h1 className={`page-title ${lang === 'hi' ? 'font-hindi' : ''}`}>
+              {t('अंक प्रविष्टि', 'Mark Entry')}
+            </h1>
+            <p className={`text-muted-foreground text-sm ${lang === 'hi' ? 'font-hindi' : ''}`}>
+              {t('परीक्षा के अंक दर्ज करें', 'Enter marks for exam')}
+            </p>
           </div>
         </div>
 
         <div className="bg-card border border-border rounded-xl p-4">
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5 font-hindi">परीक्षा चुनें</label>
+          <label className={`block text-xs font-medium text-muted-foreground mb-1.5 ${lang === 'hi' ? 'font-hindi' : ''}`}>
+            {t('परीक्षा चुनें', 'Select Exam')}
+          </label>
           <select
             value={selectedExam}
             onChange={e => setSelectedExam(e.target.value)}
             className="border border-input rounded-lg px-3 py-2.5 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring min-w-[280px]"
           >
-            <option value="">-- परीक्षा चुनें --</option>
+            <option value="">-- {t('परीक्षा चुनें', 'Select Exam')} --</option>
             {(exams ?? []).map((e: { id: string; name: string; exam_type: string }) => (
               <option key={e.id} value={e.id}>{e.name} ({e.exam_type})</option>
             ))}
@@ -84,11 +92,15 @@ export default function TeacherMarksPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-muted/50 border-b border-border">
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground font-hindi">छात्र</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground font-hindi">विषय</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground font-hindi">अधिकतम</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground font-hindi">प्राप्त अंक</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground font-hindi">अनुपस्थित</th>
+                    {[
+                      { hi: 'छात्र', en: 'Student' }, { hi: 'विषय', en: 'Subject' },
+                      { hi: 'अधिकतम', en: 'Max' }, { hi: 'प्राप्त अंक', en: 'Marks' },
+                      { hi: 'अनुपस्थित', en: 'Absent' },
+                    ].map(h => (
+                      <th key={h.en} className={`text-left px-4 py-3 text-xs font-semibold text-muted-foreground ${lang === 'hi' ? 'font-hindi' : ''}`}>
+                        {t(h.hi, h.en)}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -105,7 +117,7 @@ export default function TeacherMarksPage() {
                     return (
                       <tr key={key} className="hover:bg-muted/20">
                         <td className="px-4 py-3 font-medium">{row.first_name} {row.last_name}</td>
-                        <td className="px-4 py-3 font-hindi text-muted-foreground">{row.subject_name}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{row.subject_name}</td>
                         <td className="px-4 py-3 text-center text-muted-foreground">{row.max_marks}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
@@ -152,8 +164,10 @@ export default function TeacherMarksPage() {
                 disabled={saveMutation.isPending}
                 className="flex items-center gap-2 bg-brand-800 hover:bg-brand-700 text-white px-6 py-2.5 rounded-xl font-medium transition-colors"
               >
-                {saveMutation.isPending ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save size={16} />}
-                <span className="font-hindi">अंक सहेजें</span>
+                {saveMutation.isPending
+                  ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  : <Save size={16} />}
+                <span className={lang === 'hi' ? 'font-hindi' : ''}>{t('अंक सहेजें', 'Save Marks')}</span>
               </button>
             </div>
           </div>
