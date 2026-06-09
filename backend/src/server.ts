@@ -1,3 +1,5 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 import app from './app';
 import { env } from './config/env';
 import { connectDB } from './config/database';
