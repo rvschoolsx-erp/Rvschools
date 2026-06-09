@@ -54,10 +54,9 @@ export default function HomePage() {
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <Image src="/logo.png" alt="SchoolConnect" width={32} height={32} className="rounded-lg" />
-            <span className="font-bold text-xl text-gray-900">SchoolConnect</span>
-          </div>
+          <Link href="/">
+            <Image src="/logo.png" alt="SchoolConnect" width={140} height={48} className="h-12 w-auto object-contain" />
+          </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
             <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
             <a href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</a>
@@ -272,10 +271,9 @@ export default function HomePage() {
       <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="max-w-5xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-            <div className="flex items-center gap-2">
-              <Image src="/logo.png" alt="SchoolConnect" width={28} height={28} className="rounded-lg" />
-              <span className="font-bold text-white text-lg">SchoolConnect</span>
-            </div>
+            <Link href="/">
+              <Image src="/logo.png" alt="SchoolConnect" width={130} height={44} className="h-10 w-auto object-contain brightness-0 invert" />
+            </Link>
             <div className="flex gap-6 text-sm">
               <a href="#features" className="hover:text-white transition-colors">Features</a>
               <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>

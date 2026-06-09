@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const plans = [
   {
@@ -93,9 +94,8 @@ export default function PricingPage() {
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm">SC</div>
-            <span className="font-bold text-xl text-gray-900">SchoolConnect</span>
+          <Link href="/">
+            <Image src="/logo.png" alt="SchoolConnect" width={130} height={44} className="h-11 w-auto object-contain" />
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 font-medium">Login</Link>
@@ -189,7 +189,9 @@ export default function PricingPage() {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-500 py-8 text-center text-sm">
-        <Link href="/" className="text-white font-bold hover:text-blue-400 transition-colors">SchoolConnect</Link>
+        <Link href="/">
+          <Image src="/logo.png" alt="SchoolConnect" width={110} height={36} className="h-8 w-auto object-contain brightness-0 invert inline-block" />
+        </Link>
         <span className="mx-3">·</span>
         <a href="mailto:sales@schoolconnect.in" className="hover:text-white transition-colors">sales@schoolconnect.in</a>
         <span className="mx-3">·</span>
