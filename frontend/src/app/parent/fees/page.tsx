@@ -8,11 +8,17 @@ import { formatCurrency, cn } from '@/lib/utils';
 
 export default function ParentFeesPage() {
   const { t, lang } = useLanguage();
-  const studentId = 'demo-student-id';
+
+  const { data: parentData } = useQuery({
+    queryKey: ['parent-children'],
+    queryFn: () => apiService.analytics.parent().then(r => r.data.data),
+  });
+  const studentId = parentData?.children?.[0]?.student_id ?? '';
 
   const { data, isLoading } = useQuery({
     queryKey: ['parent-fees', studentId],
     queryFn: () => apiService.fees.getStudent(studentId).then(r => r.data.data),
+    enabled: !!studentId,
   });
 
   const fees: {

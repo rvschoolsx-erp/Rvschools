@@ -9,7 +9,12 @@ import { cn } from '@/lib/utils';
 
 export default function ParentAttendancePage() {
   const { t, lang } = useLanguage();
-  const studentId = 'demo-student-id';
+
+  const { data: parentData } = useQuery({
+    queryKey: ['parent-children'],
+    queryFn: () => apiService.analytics.parent().then(r => r.data.data),
+  });
+  const studentId = parentData?.children?.[0]?.student_id ?? '';
 
   const now = new Date();
   const [month, setMonth] = useState(now.getMonth());
@@ -21,6 +26,7 @@ export default function ParentAttendancePage() {
   const { data, isLoading } = useQuery({
     queryKey: ['parent-attendance', studentId, startDate, endDate],
     queryFn: () => apiService.attendance.getStudent(studentId, startDate, endDate).then(r => r.data.data),
+    enabled: !!studentId,
   });
 
   const records: { date: string; status: string }[] = data ?? [];

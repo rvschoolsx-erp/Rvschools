@@ -140,8 +140,9 @@ export const apiService = {
   },
   analytics: {
     admin:   () => api.get('/analytics/admin'),
-    teacher: (teacherId?: string) => api.get('/analytics/teacher', { params: { teacherId } }),
+    teacher: (teacherId?: string) => api.get('/analytics/teacher', { params: teacherId ? { teacherId } : undefined }),
     student: (studentId: string) => api.get(`/analytics/student/${studentId}`),
+    parent:  () => api.get('/analytics/parent'),
   },
   reports: {
     reportCardPdf:     (examId: string, studentId: string) =>

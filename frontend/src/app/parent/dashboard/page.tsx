@@ -11,21 +11,31 @@ import { formatCurrency, getGradeColor, cn } from '@/lib/utils';
 export default function ParentDashboard() {
   const { t, lang } = useLanguage();
   const { user } = useAuthStore();
-  const studentId = 'demo-student-id';
+
+  const { data: parentData } = useQuery({
+    queryKey: ['parent-children'],
+    queryFn: () => apiService.analytics.parent().then(r => r.data.data),
+  });
+
+  const primaryChild = parentData?.children?.[0];
+  const studentId = primaryChild?.student_id ?? '';
 
   const { data: analytics } = useQuery({
     queryKey: ['student-analytics', studentId],
     queryFn: () => apiService.analytics.student(studentId).then(r => r.data.data),
+    enabled: !!studentId,
   });
 
   const { data: marksData } = useQuery({
     queryKey: ['student-marks', studentId],
     queryFn: () => apiService.marks.getStudent(studentId).then(r => r.data.data),
+    enabled: !!studentId,
   });
 
   const { data: feesData } = useQuery({
     queryKey: ['student-fees', studentId],
     queryFn: () => apiService.fees.getStudent(studentId).then(r => r.data.data),
+    enabled: !!studentId,
   });
 
   const { data: notifications } = useQuery({
@@ -53,14 +63,15 @@ export default function ParentDashboard() {
         <div className="bg-gradient-to-r from-brand-800 to-brand-700 rounded-2xl p-5 text-white">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-gold-400 flex items-center justify-center text-brand-900 font-bold text-xl">
-              R
+              {primaryChild?.first_name?.[0]?.toUpperCase() ?? 'S'}
             </div>
             <div>
               <p className={`font-bold text-lg ${lang === 'hi' ? 'font-hindi' : ''}`}>
-                {t('राहुल कुमार शर्मा', 'Rahul Kumar Sharma')}
+                {primaryChild ? `${primaryChild.first_name} ${primaryChild.last_name}` : '—'}
               </p>
               <p className={`text-brand-200 text-sm ${lang === 'hi' ? 'font-hindi' : ''}`}>
-                {t('कक्षा 8 - A', 'Class 8 - A')} | {t('प्रवेश', 'Adm.')}: 2021/001234
+                {t('कक्षा', 'Class')} {primaryChild?.class_name} - {primaryChild?.section_name}
+                {primaryChild?.admission_number ? ` | ${t('प्रवेश', 'Adm.')}: ${primaryChild.admission_number}` : ''}
               </p>
             </div>
             <div className="ml-auto">

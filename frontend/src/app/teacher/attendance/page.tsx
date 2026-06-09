@@ -20,7 +20,7 @@ export default function TeacherAttendancePage() {
 
   const { data: teacherAnalytics } = useQuery({
     queryKey: ['teacher-analytics'],
-    queryFn: () => apiService.analytics.teacher('me').then(r => r.data.data),
+    queryFn: () => apiService.analytics.teacher().then(r => r.data.data),
   });
 
   const sections: { id: string; section_name: string; class_name: string; student_count: number }[] =
