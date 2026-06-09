@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { QueryProvider } from '@/components/providers/QueryProvider';
+import { BrandProvider } from '@/contexts/BrandContext';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
@@ -9,16 +10,16 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: {
-    default: 'शहीद राम सिंह विद्यालय | Smart School ERP',
-    template: '%s | शहीद राम सिंह विद्यालय',
+    default: 'SchoolConnect — Smart School Management Software',
+    template: '%s | SchoolConnect',
   },
-  description: 'Shaheed Ram Singh Vidyalaya — Complete School Management System with Parent Portal',
-  keywords: ['school erp', 'school management', 'parent portal', 'student portal', 'शहीद राम सिंह विद्यालय'],
-  authors: [{ name: 'Shaheed Ram Singh Vidyalaya' }],
+  description: 'SchoolConnect — Complete School ERP with Parent Portal, Attendance, Marks, Fee Management & Analytics',
+  keywords: ['school erp', 'school management software', 'parent portal', 'school connect', 'school management india'],
+  authors: [{ name: 'SchoolConnect' }],
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   openGraph: {
-    title: 'शहीद राम सिंह विद्यालय | Smart School ERP',
-    description: 'Complete School Management System with Parent Portal',
+    title: 'SchoolConnect — Smart School Management Software',
+    description: 'Complete School ERP with Parent Portal, Attendance, Marks, Fee Management & Analytics',
     type: 'website',
   },
 };
@@ -47,7 +48,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <QueryProvider>
+            <BrandProvider>
             {children}
+            </BrandProvider>
             <Toaster
               position="top-right"
               toastOptions={{

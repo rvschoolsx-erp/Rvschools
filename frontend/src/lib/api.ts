@@ -147,4 +147,8 @@ export const apiService = {
                          `${API_URL}/reports/report-card/${examId}/${studentId}/pdf`,
     attendanceExport:  (params: unknown) => api.get('/reports/attendance/export', { params, responseType: 'blob' }),
   },
+  schoolSettings: {
+    get:    () => api.get('/school-settings'),
+    update: (data: unknown) => api.put('/school-settings', data),
+  },
 };

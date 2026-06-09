@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useAuthStore } from '@/store/authStore';
+import { useBrand } from '@/contexts/BrandContext';
 import {
   LayoutDashboard, Users, GraduationCap, UserCheck, BookOpen,
   ClipboardList, CreditCard, BarChart2, Bell, Settings,
-  LogOut, Menu, X, Sun, Moon, ChevronDown, BookMarked,
+  LogOut, Menu, Sun, Moon, ChevronDown, BookMarked,
   Award, FileText, Home,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ const adminNav = [
   { label: 'रिपोर्ट',      href: '/admin/reports',    icon: FileText },
   { label: 'एनालिटिक्स',  href: '/admin/analytics',  icon: BarChart2 },
   { label: 'सूचनाएं',     href: '/admin/notifications', icon: Bell },
+  { label: 'सेटिंग्स',    href: '/admin/settings',    icon: Settings },
 ];
 
 const teacherNav = [
@@ -61,9 +63,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const { theme, setTheme } = useTheme();
+  const brand = useBrand();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  const initials = brand.schoolName.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase()).join('');
 
   const nav = navByRole[user?.role ?? 'student'] ?? studentNav;
 
@@ -76,15 +81,21 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-4 border-b border-brand-700">
-        <div className="w-10 h-10 rounded-xl bg-gold-400 flex items-center justify-center text-brand-900 font-bold text-lg flex-shrink-0">
-          श
-        </div>
+        {brand.logoUrl ? (
+          <img src={brand.logoUrl} alt={brand.schoolName} className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
+        ) : (
+          <div className="w-10 h-10 rounded-xl bg-gold-400 flex items-center justify-center text-brand-900 font-bold text-base flex-shrink-0">
+            {initials || 'SC'}
+          </div>
+        )}
         {sidebarOpen && (
           <div className="overflow-hidden">
-            <p className="font-bold text-sm text-white leading-tight font-hindi truncate">
-              शहीद राम सिंह विद्यालय
+            <p className="font-bold text-sm text-white leading-tight truncate max-w-[150px]">
+              {brand.schoolName}
             </p>
-            <p className="text-xs text-brand-300 truncate">Smart School ERP</p>
+            {!brand.whiteLabelEnabled && (
+              <p className="text-xs text-brand-400 truncate">SchoolConnect</p>
+            )}
           </div>
         )}
       </div>

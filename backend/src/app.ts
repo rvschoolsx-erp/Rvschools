@@ -21,6 +21,7 @@ import teacherRoutes from './modules/teachers/teacher.routes';
 import homeworkRoutes from './modules/homework/homework.routes';
 import examRoutes from './modules/exams/exam.routes';
 import reportRoutes from './modules/reports/report.routes';
+import schoolSettingsRoutes from './modules/school-settings/school-settings.routes';
 
 const app = express();
 
@@ -58,8 +59,8 @@ app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'शहीद राम सिंह विद्यालय ERP API',
-    version: '1.0.0',
+    service: 'SchoolConnect API',
+    version: '2.0.0',
   });
 });
 
@@ -76,6 +77,7 @@ app.use(`${API}/exams`,          examRoutes);
 app.use(`${API}/notifications`,  notificationRoutes);
 app.use(`${API}/analytics`,      analyticsRoutes);
 app.use(`${API}/reports`,        reportRoutes);
+app.use(`${API}/school-settings`, schoolSettingsRoutes);
 
 // 404 & Error handlers
 app.use(notFoundHandler);
